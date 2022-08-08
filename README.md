@@ -1,2 +1,2 @@
-# javaGame
+# JavaGame
 Java Game
