@@ -9,14 +9,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.image.BufferedImage;
 
+
+//import java.awt.event.KeyEvent;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class vegetable_Bomb extends JPanel implements KeyListener{
-    public static final int WIDTH = 400;
-    public static final int HEIGHT = 654;
+    public static final int WIDTH = 700;
+    public static final int HEIGHT = 650;
 
     private int state;
     private static final int START = 0;
@@ -29,10 +35,9 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
     private Timer timer;
     private int intervel = 1000/100;
 
-
     public static BufferedImage background;
     public static BufferedImage start;
-    public static BufferedImage airplane;
+    public static BufferedImage fruit,fruit1,fruit2,fruit3,fruit4,fruit5;
     public static BufferedImage bee;
     public static BufferedImage bullet;
     public static BufferedImage hero0;
@@ -49,9 +54,14 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
         try{
             background = ImageIO.read(vegetable_Bomb.class.getResource("images/background.png"));
             start = ImageIO.read(vegetable_Bomb.class.getResource("images/start.png"));
-            airplane = ImageIO.read(vegetable_Bomb.class.getResource("images/airplane.png"));
+            fruit = ImageIO.read(vegetable_Bomb.class.getResource("images\\fruit\\grapes.png"));
+            fruit1 = ImageIO.read(vegetable_Bomb.class.getResource("images/airplane.png"));
+            fruit2 = ImageIO.read(vegetable_Bomb.class.getResource("images/airplane.png"));
+            fruit3 = ImageIO.read(vegetable_Bomb.class.getResource("images/airplane.png"));
+            fruit4 = ImageIO.read(vegetable_Bomb.class.getResource("images/airplane.png"));
+            fruit5 = ImageIO.read(vegetable_Bomb.class.getResource("images/airplane.png"));
             bee = ImageIO.read(vegetable_Bomb.class.getResource("images/bee.png"));
-            bullet = ImageIO.read(vegetable_Bomb.class.getResource("images/bullet.png"));
+            bullet = ImageIO.read(vegetable_Bomb.class.getResource("images/bag.png"));
             hero0 = ImageIO.read(vegetable_Bomb.class.getResource("images/hero0.png"));
             hero1 = ImageIO.read(vegetable_Bomb.class.getResource("images/hero1.png"));
             pause = ImageIO.read(vegetable_Bomb.class.getResource("images/pause.png"));
@@ -93,7 +103,7 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
     // 畫分數
     private void paintScore(Graphics g) {
         int x = 10;
-        int y= 25;
+        int y = 25;
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, 22);
         g.setColor(new Color(0xFF0000));
         g.setFont(font);
@@ -115,67 +125,34 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
                 break;
         }
     }
-
-
+    // main
     public static void main(String args[]){
-        JFrame frame = new JFrame("FIY");
+        JFrame frame = new JFrame("Vegetable_Bomb");
         vegetable_Bomb game = new vegetable_Bomb();
         frame.add(game); // 將面板加到JFrame中
         frame.setSize(WIDTH, HEIGHT);
         frame.setAlwaysOnTop(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setIconImage(new ImageIcon("images/icon.jpg").getImage());
+        frame.setIconImage(new ImageIcon("images/bee.png").getImage());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        frame.addKeyListener(game);
+
+//        CKeyboard board = new CKeyboard();
+//        frame.add(board);
+//        frame.addKeyListener(board); //註冊監聽
 
         // 啟動
         game.action();
     }
 
     public void action(){
-
-        MouseAdapter l = new MouseAdapter(){
-            @Override
-            public void mouseMoved(MouseEvent e){
-                if(state == RUNNING){
-                    int x = e.getX();
-                    int y = e.getY();
-                    hero.moveTo(x, y);
-                }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e){
-                if(state==PAUSE){
-                    state = RUNNING;
-                }
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e){
-                if(state == RUNNING){
-                    state = PAUSE;
-                }
-            }
-            @Override
-            public void mouseClicked(MouseEvent e){
-                switch(state){
-                    case START:
-                        state = RUNNING;
-                        break;
-                    case GAME_OVER:
-                        flyings = new AFlyObject[0];
-                        bullets = new CBullet[0];
-                        hero = new CHero();
-                        score = 0;
-                        state = START;
-                        break;
-                }
-            }
-        };
-        this.addMouseListener(l);
-        this.addMouseMotionListener(l);
-
         timer = new Timer();
         timer.schedule(new TimerTask(){
            @Override
@@ -193,8 +170,8 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
         }, intervel, intervel);
     }
 
-    int flyEnteredIndex = 0;
 
+    int flyEnteredIndex = 0;
 
     public void enterAction(){
         flyEnteredIndex+=1;
@@ -346,7 +323,48 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_DOWN){
+            System.out.println("DOWN");
+            if(state == RUNNING){
+                int x = hero.getX();
+                int y = hero.getY();
+                y+=10;
+                hero.moveTo(x, y);
+            }
+        }
+        else if(e.getKeyCode()==KeyEvent.VK_UP){
+            System.out.println("UP");
+            if(state == RUNNING){
+                int x = hero.getX();
+                int y = hero.getY();
+                y-=10;
+                hero.moveTo(x, y);
+            }
 
+        }
+        else if(e.getKeyCode()==KeyEvent.VK_LEFT){
+            System.out.println("LEFT");
+            if(state == RUNNING){
+                int x = hero.getX();
+                int y = hero.getY();
+                x-=10;
+                hero.moveTo(x, y);
+            }
+        }
+        else if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+            System.out.println("RIGHT");
+            if(state == RUNNING){
+
+                int x = hero.getX();
+                int y = hero.getY();
+                System.out.println(x+" "+y);
+                x+=10;
+                hero.moveTo(x, y);
+            }
+        }
+        else if(e.getKeyCode()==10) {
+            state = RUNNING;
+        }
     }
 
     @Override
@@ -354,3 +372,7 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
 
     }
 }
+
+
+
+
