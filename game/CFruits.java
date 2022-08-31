@@ -9,7 +9,8 @@ public class CFruits extends AFlyObject implements InterEnemy{
     public CFruits(){
         // 取得圖片及寬、高
         Random random = new Random();
-        which = random.nextInt(5);
+        which = random.nextInt(100);
+        which = which%5;
         this.image = vegetable_Bomb.veg[which];
 
 //        this.image = vegetable_Bomb.fruit;
