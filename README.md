@@ -7,7 +7,7 @@ Vegetable Bomb
 
 
 音樂<br>
-  背景配樂<br>
+- [ ] 背景配樂<br>
   觸發(碰撞)配樂<br>
 
 子彈<br>
