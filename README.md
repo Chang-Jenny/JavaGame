@@ -6,7 +6,7 @@ Vegetable Bomb
 改寫：https://kknews.cc/code/l9vggo9.html
 
 
-音樂
+音樂<br>
   背景配樂
   觸發(碰撞)配樂
 
