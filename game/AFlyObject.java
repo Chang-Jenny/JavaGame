@@ -8,6 +8,7 @@ public abstract class AFlyObject {
     protected int y;
     protected int width;
     protected int height;
+    protected int which;
     protected BufferedImage image;
 
     // 設定
@@ -22,6 +23,7 @@ public abstract class AFlyObject {
     public int getWidth(){ return this.width; }
     public int getHeight(){ return this.height; }
     public BufferedImage getImage(){ return this.image; }
+    public int getWhich(){ return this.which; }
 
     // 出視窗界線與否
     //@return true為出界
@@ -31,6 +33,7 @@ public abstract class AFlyObject {
     public abstract void step();
 
     // 被子彈擊中
+    // @return true則擊中
     public boolean isShoot(CBullet bullet){
         int x = bullet.x;
         int y = bullet.y;
