@@ -19,6 +19,9 @@ public class CHero extends AFlyObject {
         image = vegetable_Bomb.hero0;
         width = image.getWidth();
         height = image.getHeight();
+        // 初始位置
+        x = 300;
+        y = 420;
     }
     // 得到雙倍火力數值
     public int isDoubleFire(){
@@ -46,8 +49,8 @@ public class CHero extends AFlyObject {
     }
     // 物體移動到哪
     public void moveTo(int x, int y){
-        this.x = x - width/2;
-        this.y = y - height/2;
+        this.x = x;
+        this.y = y;
     }
     // 界線
     @Override
@@ -56,7 +59,7 @@ public class CHero extends AFlyObject {
     }
     // 發射子彈
     public CBullet[] shoot(){
-        int xStep = width/4;
+        int xStep = width/8;
         int yStep= 20;
 
         // 雙倍火力狀態

@@ -7,10 +7,15 @@ public class CFruits extends AFlyObject implements InterEnemy{
 
     // constructor
     public CFruits(){
-        this.image = vegetable_Bomb.airplane;
+        // 取得圖片及寬、高
+        Random random = new Random();
+        which = random.nextInt(5);
+        this.image = vegetable_Bomb.veg[which];
+
+//        this.image = vegetable_Bomb.fruit;
         width = image.getWidth();
         height = image.getHeight();
-
+        // 初始位置
         y = -height;
         Random rand = new Random();
         x = rand.nextInt(vegetable_Bomb.WIDTH-width);
@@ -33,5 +38,13 @@ public class CFruits extends AFlyObject implements InterEnemy{
     public void step(){
         y+=speed;
     }
+
+    // 回傳哪一張蔬果圖片被打中
+    public int getWhich(){
+        int which = this.which;
+        return which;
+    }
+
+
 
 }

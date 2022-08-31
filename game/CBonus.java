@@ -9,19 +9,21 @@ public class CBonus extends AFlyObject implements InterAward{
 
     // constructor
     public CBonus(){
-        this.image = vegetable_Bomb.bee;
+        // 取得圖片及寬、高
+        this.image = vegetable_Bomb.coin;
         width = image.getWidth();
         height = image.getHeight();
 
+        // 初始位置
         y=-height;
         Random rand = new Random();
         x=rand.nextInt(vegetable_Bomb.WIDTH - width);
 
-        // 獎勵類型
+        // 隨機產生獎勵類型
         awardType = rand.nextInt(2);
     }
 
-    // 獲得獎勵類型
+    // 回傳獎勵類型
     public int getType(){
         return awardType;
     }
