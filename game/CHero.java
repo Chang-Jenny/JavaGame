@@ -51,6 +51,7 @@ public class CHero extends AFlyObject {
     public void moveTo(int x, int y){
         this.x = x;
         this.y = y;
+
     }
     // 界線
     @Override
@@ -81,10 +82,11 @@ public class CHero extends AFlyObject {
     // 移動
     @Override
     public void step(){
-        if(images.length>0){
-            // 切換圖片
-            image = images[ index++/10%images.length ];
-        }
+//        if(images.length>0){
+//            // 切換圖片
+//            image = images[ index++/10%images.length ];
+//        }
+        image = vegetable_Bomb.hero0;
     }
     // 碰撞算法
     public boolean hit(AFlyObject other){
@@ -97,6 +99,13 @@ public class CHero extends AFlyObject {
         int heroy = this.y + this.height/2;
 
         return herox>x1 && herox<x2 && heroy>y1 && heroy<y2;
+    }
+
+    public void stop(){
+        if(images.length>0){
+            // 切換圖片
+            image = images[ index++/10%images.length ];
+        }
     }
     //
     //

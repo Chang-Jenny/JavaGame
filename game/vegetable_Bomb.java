@@ -1,5 +1,6 @@
 package game;
 // https://kknews.cc/code/l9vggo9.html
+// 背景: https://blog.csdn.net/m0_48781656/article/details/108928754
 import java.awt.*;
 import java.awt.event.*;
 
@@ -30,12 +31,23 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
     private static final int PAUSE = 2;
     private static int LEVEL=1;
     private static final int GAME_OVER = 3;
+    private static final int RESTART = 4;
+
+    private static String playerName;
 
     private int score = 0;
     private Timer timer;
     private int intervel = 1000/100;
 
-    public static BufferedImage background;
+    private int bgSpeed=2;
+//    private int locate_y0=0;
+//    private int locate_y1=-650;
+    private int locate_y0=0;
+    private int locate_y1=700;
+
+
+    public static BufferedImage background0;
+    public static BufferedImage background1;
     public static BufferedImage start;
     public static BufferedImage gameover;
     public static BufferedImage pause;
@@ -47,33 +59,36 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
     public static BufferedImage hero0;
     public static BufferedImage hero1;
 
-
+//    protected static String flyname[] = new String[5];
+    protected static String flyname[] = {"apple", "banana", "carrot", "guava", "strawberry"};
 
     private AFlyObject[] flyings={}; // 敵人
     private CBullet[] bullets = {}; // 子彈
     private CHero hero = new CHero(); // 主角
     private CFruitsEng fruitEng = null; // 蔬果英文字
 
+    private Image imgb;
+    private Graphics gb;
     // 初始化圖片資源
     static{
         try{
-            background = ImageIO.read(vegetable_Bomb.class.getResource("images/start.png"));
-            start = ImageIO.read(vegetable_Bomb.class.getResource("images/start.png"));
-//            fruit = ImageIO.read(vegetable_Bomb.class.getResource("images\\fruit\\grapes.png"));
-            veg[0] = ImageIO.read(vegetable_Bomb.class.getResource("images\\fruit\\apple.png"));
-            veg[1] = ImageIO.read(vegetable_Bomb.class.getResource("images\\fruit\\banana.png"));
-            veg[2] = ImageIO.read(vegetable_Bomb.class.getResource("images\\fruit\\carrot.png"));
-            veg[3] = ImageIO.read(vegetable_Bomb.class.getResource("images\\fruit\\guava.png"));
-            veg[4] = ImageIO.read(vegetable_Bomb.class.getResource("images\\fruit\\strawberry.png"));
-            vegEng[0] = ImageIO.read(vegetable_Bomb.class.getResource("images\\english\\apple.png"));
-            vegEng[1] = ImageIO.read(vegetable_Bomb.class.getResource("images\\english\\banana.png"));
-            vegEng[2] = ImageIO.read(vegetable_Bomb.class.getResource("images\\english\\carrot.png"));
-            vegEng[3] = ImageIO.read(vegetable_Bomb.class.getResource("images\\english\\guava.png"));
-            vegEng[4] = ImageIO.read(vegetable_Bomb.class.getResource("images\\english\\strawberry.png"));
-            coin = ImageIO.read(vegetable_Bomb.class.getResource("images/bee.png"));
+            background0 = ImageIO.read(vegetable_Bomb.class.getResource("images/bg.png"));
+            background1 = ImageIO.read(vegetable_Bomb.class.getResource("images/bg.png"));
+
+            for(int i=0;i<flyname.length;i++){
+                String imgUrl = "images\\fruit\\"+flyname[i]+".png";
+                veg[i] = ImageIO.read(vegetable_Bomb.class.getResource(imgUrl));
+            }
+            for(int i=0;i<flyname.length;i++){
+                String imgUrl = "images\\english\\"+flyname[i]+".png";
+                vegEng[i] = ImageIO.read(vegetable_Bomb.class.getResource(imgUrl));
+            }
+            coin = ImageIO.read(vegetable_Bomb.class.getResource("images/coin.png"));
             bullet = ImageIO.read(vegetable_Bomb.class.getResource("images/bullet.png"));
             hero0 = ImageIO.read(vegetable_Bomb.class.getResource("images/hero0.png"));
             hero1 = ImageIO.read(vegetable_Bomb.class.getResource("images/hero1.png"));
+
+            start = ImageIO.read(vegetable_Bomb.class.getResource("images/start.png"));
             pause = ImageIO.read(vegetable_Bomb.class.getResource("images/pause.png"));
             gameover = ImageIO.read(vegetable_Bomb.class.getResource("images/gameover.png"));
         }
@@ -85,44 +100,67 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
     // draw
     @Override
     public void paint(Graphics g){
-        if(state != GAME_OVER) {
+        imgb = createImage(getWidth(),getHeight());//建立圖形緩衝區
+        gb = imgb.getGraphics();
+
+        if(state == RUNNING) {
             paintBackground(g);
             paintHero(g);
             paintBullets(g);
             paintFlyingObjects(g);
             paintScore(g);
             paintEng(g);
+//            g.drawImage(imgb, 0, 0, this);//將圖形緩衝區繪製到螢幕上
         }
         paintState(g);
+        g.drawImage(imgb, 0, 0, null);//將圖形緩衝區繪製到螢幕上
     }
     // 畫背景
     private void paintBackground(Graphics g) {
-        g.drawImage(background, 0, 0, null);
+//        背景向下捲動
+//        locate_y0+=bgSpeed;
+//        locate_y1+=bgSpeed;
+//        if(locate_y0>=650){
+//            locate_y0=-650;
+//        }
+//        if(locate_y1>=650){
+//            locate_y1=-650;
+//        }
+        locate_y0-=bgSpeed;
+        locate_y1-=bgSpeed;
+        if(locate_y0<=-700){
+            locate_y0=700;
+        }
+        if(locate_y1<=-700){
+            locate_y1=700;
+        }
+        gb.drawImage(background0, locate_y0, 0, null);
+        gb.drawImage(background1, locate_y1, 0, null);
     }
 
     // 畫主角
     private void paintHero(Graphics g) {
-        g.drawImage(hero.getImage(), hero.getX(), hero.getY(), null);
+        gb.drawImage(hero.getImage(), hero.getX(), hero.getY(), null);
     }
     // 畫子彈
     private void paintBullets(Graphics g) {
         for(int i =0; i<bullets.length; i++){
             CBullet b = bullets[i];
-            g.drawImage(b.getImage(), b.getX()-b.getWidth()/2, b.getY(), null);
+            gb.drawImage(b.getImage(), b.getX()-b.getWidth()/2, b.getY(), null);
         }
     }
     // 畫飛行物體
     private void paintFlyingObjects(Graphics g) {
         for(int i =0; i<flyings.length; i++){
             AFlyObject f = flyings[i];
-            g.drawImage(f.getImage(), f.getX(), f.getY(), null);
+            gb.drawImage(f.getImage(), f.getX(), f.getY(), null);
         }
     }
     // 畫英文字
     private void paintEng(Graphics g){
         if(fruitEng!=null) {
             CFruitsEng words = fruitEng;
-            g.drawImage(words.getImage(), words.x, words.y, null);
+            gb.drawImage(words.getImage(), words.x, words.y, null);
         }
     }
     // 畫分數
@@ -130,33 +168,47 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
         int x = 10;
         int y = 25;
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, 22);
-        g.setColor(new Color(0xFF0000));
-        g.setFont(font);
-        g.drawString("SCORE: "+ score, x, y);
+        gb.setColor(new Color(0x3D59AB));
+        gb.setFont(font);
+        gb.drawString("NAME: " + playerName, x, y);
+
+        gb.setColor(new Color(0xFF0000));
+        gb.setFont(font);
+        y+=30;
+        gb.drawString("SCORE: "+ score, x, y);
         y+=20;
-        g.drawString("LIFE: "+ hero.getLife(), x, y);
+        gb.drawString("LIFE: "+ hero.getLife(), x, y);
+
     }
     // 畫遊戲狀態
     public void paintState(Graphics g){
         switch(state){
             case START:
-                g.drawImage(start, 0, 0, null);
+                gb.drawImage(start, 0, 0, null);
                 break;
             case PAUSE:
-                g.drawImage(pause, 0, 0, null);
+                gb.drawImage(pause, 0, 0, null);
                 break;
             case GAME_OVER:
-                g.drawImage(gameover, 0, 0, null);
+                gb.drawImage(gameover, 0, 0, null);
+                Font font = new Font(Font.SANS_SERIF, Font.BOLD, 22);
+                gb.setColor(new Color(0xFF8000));
+                gb.setFont(font);
+                gb.drawString("YOUR SCORE: " + score, 250, 400);
                 break;
+
+            case RESTART:
+                gb.drawImage(start, 0, 0, null);
         }
     }
     // main
     public static void main(String args[]){
         JFrame frame = new JFrame("Vegetable_Bomb");
         vegetable_Bomb game = new vegetable_Bomb();
+
         frame.add(game); // 將面板加到JFrame中
         frame.setSize(WIDTH, HEIGHT);
-        frame.setAlwaysOnTop(true);
+//        frame.setAlwaysOnTop(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(new ImageIcon("images/bee.png").getImage());
         frame.setLocationRelativeTo(null);
@@ -168,13 +220,16 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
             }
         });
         frame.addKeyListener(game);
-
+        popUp remind = new popUp();
+        playerName = remind.getPlayerName();
 //        CKeyboard board = new CKeyboard();
 //        frame.add(board);
 //        frame.addKeyListener(board); //註冊監聽
 
         // 啟動
+//        CMusic music = new CMusic("voice.wav");
         game.action();
+
     }
 
     public void action(){
@@ -189,6 +244,10 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
                     bangAction();
                     outOfBoundsAction();
                     checkGameOverAction();
+
+                }
+                if(state==GAME_OVER){
+                    isRestart();
                 }
                 repaint();
            }
@@ -221,7 +280,7 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
             b.step();
         }
         // 主角移動一步
-        hero.step();
+        hero.stop();
     }
 
     public void flyingStepAction(){
@@ -231,7 +290,6 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
         }
     }
 
-    int shootIndex =0; // 射擊計數
 
     // 射擊
     public void shootAction(){
@@ -250,7 +308,7 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
     public void bangAction(){
         for(int i=0; i<bullets.length; i++){
             CBullet b = bullets[i];
-            bang(b);
+            bang(b,i);
         }
     }
     // 刪除出界的飛行物及子彈
@@ -269,49 +327,70 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
         CBullet[] bulletLives = new CBullet[bullets.length];
         for(int i=0; i<bullets.length; i++){
             CBullet b = bullets[i];
-            if(!b.outOfBounds()){
-                bulletLives[index++] = b;
+            if (b!=null){
+                if(!b.outOfBounds()){
+                    bulletLives[index++] = b;
+                }
             }
+
         }
         bullets = Arrays.copyOf(bulletLives, index);
     }
     public void checkGameOverAction(){
         if(isGameOver()==true){
             state = GAME_OVER;
-            flyings = null; // 敵人
-            bullets = null; // 子彈
+            flyings = new AFlyObject[0]; // 敵人
+            bullets = new CBullet[0]; // 子彈
             hero = null; // 主角
             fruitEng = null; // 蔬果英文字
-
+//            score = 0;
         }
     }
     public boolean isGameOver(){
-        for(int i =0; i<flyings.length; i++){
-            int index =-1;
-            AFlyObject obj = flyings[i];
-            if(hero.hit(obj)){
-                hero.subtractLife();
-                hero.setDoubleFire(0);
-                index = i;
-            }
-            if(index !=-1){
-                AFlyObject t = flyings[index];
-                flyings[index] = flyings[flyings.length -1];
-                flyings[flyings.length -1] = t;
+        if(state==RUNNING) {
+            for (int i = 0; i < flyings.length; i++) {
+                int index = -1;
+                AFlyObject obj = flyings[i];
+                if (hero.hit(obj)) {
+                    hero.subtractLife();
+                    hero.setDoubleFire(0);
+                    index = i;
+                }
+                if (index != -1) {
+                    AFlyObject t = flyings[index];
+                    flyings[index] = flyings[flyings.length - 1];
+                    flyings[flyings.length - 1] = t;
 
-                flyings = Arrays.copyOf(flyings, flyings.length -1);
+                    flyings = Arrays.copyOf(flyings, flyings.length - 1);
 
+                }
             }
+            return hero.getLife() <= 0;
         }
-        return hero.getLife() <=0;
+        return false;
     }
 
-    public void bang(CBullet bullet){
+    public void isRestart(){
+        if(state == RESTART){
+            hero = new CHero(); // 主角
+            fruitEng = null; // 蔬果英文字
+            state = START;
+            score = 0;
+        }
+
+    }
+
+    public void bang(CBullet bullet, int del){
         int index = -1; // 被擊中的飛行物在陣列中的索引值
         for(int i =0; i<flyings.length; i++){
             AFlyObject obj = flyings[i];
             // 依序檢查每一飛行物找到被擊中的那一個
-            if(obj.isShoot(bullet)){
+            if(bullet != null && obj.isShoot(bullet)){
+                // 刪除該子彈
+                bullets[del]=null;
+
+                // 擊中音效
+                CMusic music = new CMusic("jump.wav");
                 index=i;
                 break;
             }
@@ -328,9 +407,25 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
             // 是蔬果 (敵方)
             if(one instanceof InterEnemy){
                 int whichShoot = one.getWhich();
-                CFruitsEng Eng = new CFruitsEng(whichShoot);
+                int x = one.getX();
+                int y = one.getY();
+                // 出現被打中蔬果的英文字
+                CFruitsEng Eng = new CFruitsEng(whichShoot, x, y);
                 fruitEng = Eng;
                 System.out.println("哪一個蔬果: "+whichShoot);
+
+                // 出現2秒英文字消失
+                Timer calTime = new Timer();
+                calTime.scheduleAtFixedRate(new TimerTask() {
+                    int i = 2;
+                    public void run() {
+                        i--;
+                        if (i < 0) {
+                            calTime.cancel();
+                            fruitEng=null;
+                        }
+                    }
+                }, 0, 1000);
 
                 // 強制轉型
                 InterEnemy e = (InterEnemy) one;
@@ -369,57 +464,63 @@ public class vegetable_Bomb extends JPanel implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode()==KeyEvent.VK_DOWN){
-            System.out.println("DOWN");
-            if(state == RUNNING){
-                int x = hero.getX();
-                int y = hero.getY();
-                y+=20;
-                hero.moveTo(x, y);
-            }
+        if(e.getKeyCode()==10) {
+            state = RUNNING;
         }
-        else if(e.getKeyCode()==KeyEvent.VK_UP){
-            System.out.println("UP");
-            if(state == RUNNING){
-                int x = hero.getX();
-                int y = hero.getY();
-                y-=20;
-                hero.moveTo(x, y);
-            }
-
-        }
-        else if(e.getKeyCode()==KeyEvent.VK_LEFT){
-            System.out.println("LEFT");
-            if(state == RUNNING){
-                int x = hero.getX();
-                int y = hero.getY();
-                x-=20;
-                hero.moveTo(x, y);
-            }
-        }
-        else if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-            System.out.println("RIGHT");
-            if(state == RUNNING){
-
+        if(state == RUNNING){
+            if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+                System.out.println("RIGHT");
                 int x = hero.getX();
                 int y = hero.getY();
                 System.out.println(x+" "+y);
                 x+=20;
+                hero.step();
                 hero.moveTo(x, y);
             }
+            else if(e.getKeyCode()==KeyEvent.VK_LEFT){
+                System.out.println("LEFT");
+                int x = hero.getX();
+                int y = hero.getY();
+                x-=20;
+                hero.step();
+                hero.moveTo(x, y);
+            }
+            else if(e.getKeyCode()==KeyEvent.VK_UP){
+                System.out.println("UP");
+                int x = hero.getX();
+                int y = hero.getY();
+                y-=20;
+                hero.step();
+                hero.moveTo(x, y);
+            }
+            else if(e.getKeyCode()==KeyEvent.VK_DOWN){
+                System.out.println("DOWN");
+                int x = hero.getX();
+                int y = hero.getY();
+                y+=20;
+                hero.step();
+                hero.moveTo(x, y);
+            }
+            else if(e.getKeyCode()==KeyEvent.VK_SPACE) {
+                shootAction();
+                System.out.println("SPACE");
+            }
         }
-        else if(e.getKeyCode()==10) {
-            state = RUNNING;
-        }
-        else if(e.getKeyCode()==KeyEvent.VK_SPACE) {
-            shootAction();
-            System.out.println("SPACE");
-//            state = PAUSE;
+
+        if(state == GAME_OVER){
+            if(e.getKeyCode()==KeyEvent.VK_Y){
+                System.out.println("Y");
+                state = RESTART;
+
+                hero = new CHero(); // 主角
+                fruitEng = null; // 蔬果英文字
+            }
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) { }
+    public void keyReleased(KeyEvent e) {  }
+
 }
 
 
