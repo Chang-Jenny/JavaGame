@@ -25,6 +25,7 @@ public class H7_110816002 extends Frame implements ActionListener{
     static Panel pnl_op=new Panel(new GridLayout(6,1));
     static Panel pnl_else=new Panel(new GridLayout(1,3));
     static Label lab=new Label("0",Label.RIGHT);
+    static Label labProcess = new Label("", Label.RIGHT);
     //按鈕
     static Button btn1=new Button("1");
     static Button btn2=new Button("2");
@@ -57,9 +58,11 @@ public class H7_110816002 extends Frame implements ActionListener{
         frm.setSize(360,550);
         frm.setLocation(45,35);
         frm.setResizable(false); //固定視窗大小
+        frm.setBackground(new Color(245,245,245));
 
         //設定大小、位置
-        lab.setBounds(20,30,320,80);
+        labProcess.setBounds(20,30,320,30);
+        lab.setBounds(20,60,320,50);
         pnl_num.setBounds(20,260,240,210);
         pnl_funct.setBounds(20,120,240,140);
         pnl_op.setBounds(260,120,80,420);
@@ -67,6 +70,8 @@ public class H7_110816002 extends Frame implements ActionListener{
 
         //設定顏色
         lab.setBackground(new Color(245,245,245));
+        labProcess.setBackground(new Color(245,245,245));
+
         btn21.setBackground(new Color(122,184,204));
         btn1.setBackground(new Color(255,252,250));
         btn2.setBackground(new Color(255,252,250));
@@ -95,6 +100,9 @@ public class H7_110816002 extends Frame implements ActionListener{
         // 設定字型大小
         Font fnt_l=new Font("Serief",Font.BOLD,32);
         lab.setFont(fnt_l);
+        Font fnt_lP=new Font("Serief",Font.ITALIC,14);
+        labProcess.setFont(fnt_lP);
+
         Font fnt_p=new Font("Serief",Font.BOLD,16);
         pnl_num.setFont(fnt_p);
         pnl_funct.setFont(fnt_p);
@@ -105,9 +113,9 @@ public class H7_110816002 extends Frame implements ActionListener{
         btn1.addActionListener(frm);btn2.addActionListener(frm);btn3.addActionListener(frm);
         btn4.addActionListener(frm);btn5.addActionListener(frm);btn6.addActionListener(frm);
         btn7.addActionListener(frm);btn8.addActionListener(frm);btn9.addActionListener(frm);
-        pnl_num.add(btn9);pnl_num.add(btn8);pnl_num.add(btn7);pnl_num.add(btn6);
-        pnl_num.add(btn5);pnl_num.add(btn4);pnl_num.add(btn3);pnl_num.add(btn2);
-        pnl_num.add(btn1);
+        pnl_num.add(btn7);pnl_num.add(btn8);pnl_num.add(btn9);pnl_num.add(btn4);
+        pnl_num.add(btn5);pnl_num.add(btn6);pnl_num.add(btn1);pnl_num.add(btn2);
+        pnl_num.add(btn3);
 
         btn15.addActionListener(frm);btn20.addActionListener(frm);
         btn19.addActionListener(frm);btn17.addActionListener(frm);
@@ -127,6 +135,7 @@ public class H7_110816002 extends Frame implements ActionListener{
 
         //加至frm
         frm.add(lab);
+        frm.add(labProcess);
         frm.add(pnl_num);
         frm.add(pnl_funct);
         frm.add(pnl_op);
@@ -248,13 +257,15 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 out(0);
                 op="+";
-
+                labProcess.setText("0+");
             }
             else{
                 lab.setText("+");
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
+                judgement(temp);
+                labProcess.setText(labProcess.getText()+"+");
                 out(temp);
                 op="+";
             }
@@ -262,6 +273,7 @@ public class H7_110816002 extends Frame implements ActionListener{
 
         if(btn==btn12){ //-
             if(counter==0 && counterop==0){ // 第一個輸入為-
+                labProcess.setText("0-");
                 counterop+=1;
                 out(0);
                 op="-";
@@ -271,13 +283,17 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
+                judgement(temp);
+                labProcess.setText(labProcess.getText()+"-");
                 out(temp);
                 op="-";
             }
 
         }
         if(btn==btn13){ //*
+
             if(counter==0 && counterop==0){ // 第一個輸入為*
+                labProcess.setText("0*");
                 counterop+=1;
                 out(0);
                 op="*";
@@ -287,6 +303,8 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
+                judgement(temp);
+                labProcess.setText(labProcess.getText()+"x");
                 out(temp);
                 op="*";
             }
@@ -294,6 +312,7 @@ public class H7_110816002 extends Frame implements ActionListener{
         }
         if(btn==btn14){ //÷
             if(counter==0 && counterop==0){ // 第一個輸入為÷
+                labProcess.setText("0÷");
                 counterop+=1;
                 out(0);
                 op="/";
@@ -303,6 +322,8 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
+                judgement(temp);
+                labProcess.setText(labProcess.getText()+"÷");
                 out(temp);
                 op="/";
             }
@@ -339,12 +360,12 @@ public class H7_110816002 extends Frame implements ActionListener{
                 }
                 counterop=0; //清除紀錄，重新開始小算盤
                 op="=";
+                labProcess.setText("");
             }
         }
 
         if(btn==btn22){ //小數點.
             if(counter==0){ //錯誤判斷，第一個輸入不為小數點
-//                System.out.println("輸入錯誤!");
                 lab.setText("0.");
                 Cnum[counter]=0;
                 counter+=1;
@@ -545,5 +566,19 @@ public class H7_110816002 extends Frame implements ActionListener{
     public float square(float x){
         float temp=x*x;
         return temp;
+    }
+
+    public void judgement(float x) {
+        String judge = Float.toString(x);
+        if (judge.contains(".")) {
+            int index;
+            index = judge.indexOf(".");
+            System.out.println(index);
+            if (judge.substring(judge.indexOf(".") + 1, judge.length()).equals("0")) {
+                labProcess.setText(Integer.toString((int) x));
+            } else labProcess.setText(Float.toString(x));
+        } else {
+            labProcess.setText(Float.toString(x));
+        }
     }
 }
