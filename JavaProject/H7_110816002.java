@@ -1,15 +1,16 @@
 import java.awt.*;
 import java.awt.event.*;
+import static java.lang.Integer.parseInt;
+
 /*姓名: 張*真
-  學號: 110816002
+  學號: 110816***
   操作說明: 刻出MS Window小算盤介面，並模擬window小算盤的顏色及按鈕擺放位置等，提供使用者基本的加、
           減、乘、除運算功能並顯示運算結果在label上，且根據此小算盤沒有四則運算原則，故操作為兩兩數值直接運算。
           也提供C、CE、Del的按鍵功能(C清除全部運算、CE清除當次輸入、Del清除最後一個輸入的數字)，
-          且在尚未輸入數字前按下以上三個按鈕會提醒使用者輸入錯誤。此程式可以執行小數點運算，包括
-          直接輸入包含小數點的數值做運算及運算結果可為小數等，能正常顯示以及搭配功能鍵使用。另外
-          特殊運算(%、倒數、根號、平方)，平方可與上述做混合運算，但%、倒數、根號則只能做單次運算，
-          並直接顯示結果於Label上，且須直接按下C清除本次運算才能繼續下一次的計算。以單次運算交作業。若要結束小算盤程式可直接按
-          右上角的叉叉關閉視窗。
+          且在尚未輸入數字前按下以上三個按鈕會提醒使用者輸入錯誤。此程式可以執行小數點運算，
+          包括直接輸入包含小數點的數值做運算及運算結果可為小數等，能正常顯示以及搭配功能鍵使用。
+          另外特殊運算(%、倒數、根號、平方)，平方可與上述做混合運算，並直接顯示結果於Label上，
+          若要結束小算盤程式可直接按右上角的叉叉關閉視窗。
   自評：
       1.程式有意義且可以執行 (+20%)
       2.僅支援整數運算 (+30%)
@@ -23,7 +24,7 @@ public class H7_110816002 extends Frame implements ActionListener{
     static Panel pnl_funct=new Panel(new GridLayout(2,3));
     static Panel pnl_op=new Panel(new GridLayout(6,1));
     static Panel pnl_else=new Panel(new GridLayout(1,3));
-    static Label lab=new Label("0.",Label.RIGHT);
+    static Label lab=new Label("0",Label.RIGHT);
     //按鈕
     static Button btn1=new Button("1");
     static Button btn2=new Button("2");
@@ -91,7 +92,7 @@ public class H7_110816002 extends Frame implements ActionListener{
         btn20.setBackground(new Color(245,245,245));
         btn23.setBackground(new Color(245,245,245));
 
-        //設定字型大小
+        // 設定字型大小
         Font fnt_l=new Font("Serief",Font.BOLD,32);
         lab.setFont(fnt_l);
         Font fnt_p=new Font("Serief",Font.BOLD,16);
@@ -100,7 +101,7 @@ public class H7_110816002 extends Frame implements ActionListener{
         pnl_op.setFont(fnt_p);
         pnl_else.setFont(fnt_p);
 
-        //設定Button
+        // 設定Button
         btn1.addActionListener(frm);btn2.addActionListener(frm);btn3.addActionListener(frm);
         btn4.addActionListener(frm);btn5.addActionListener(frm);btn6.addActionListener(frm);
         btn7.addActionListener(frm);btn8.addActionListener(frm);btn9.addActionListener(frm);
@@ -150,43 +151,63 @@ public class H7_110816002 extends Frame implements ActionListener{
     float outcome=0; //運算結果
     public void actionPerformed(ActionEvent e){
         if(counter==0){
-            lab.setText(""); //尚未輸入數字
+            lab.setText("0"); //尚未輸入數字
         }
         Button btn=(Button)e.getSource();
         try{
-            Cnum[counter]=Integer.parseInt(btn.getLabel());
+            Cnum[counter]= parseInt(btn.getLabel());
             counter+=1; //如果是數字才加1，且Cnum陣列從索引值0開始存放
-        }catch(Exception E){
+        }catch(Exception E){ }
+        if(lab.getText()!="0"){
+            if(btn==btn1)// 如果是按下btn1按鈕
+                lab.setText(lab.getText()+"1");
+            if(btn==btn2)
+                lab.setText(lab.getText()+"2");
+            if(btn==btn3)
+                lab.setText(lab.getText()+"3");
+            if(btn==btn4)
+                lab.setText(lab.getText()+"4");
+            if(btn==btn5)
+                lab.setText(lab.getText()+"5");
+            if(btn==btn6)
+                lab.setText(lab.getText()+"6");
+            if(btn==btn7)
+                lab.setText(lab.getText()+"7");
+            if(btn==btn8)
+                lab.setText(lab.getText()+"8");
+            if(btn==btn9)
+                lab.setText(lab.getText()+"9");
+            if(btn==btn10)
+                lab.setText(lab.getText()+"0");
         }
-
-        if(btn==btn1)// 如果是按下btn1按鈕
-            lab.setText(lab.getText()+"1");
-        if(btn==btn2)
-            lab.setText(lab.getText()+"2");
-        if(btn==btn3)
-            lab.setText(lab.getText()+"3");
-        if(btn==btn4)
-            lab.setText(lab.getText()+"4");
-        if(btn==btn5)
-            lab.setText(lab.getText()+"5");
-        if(btn==btn6)
-            lab.setText(lab.getText()+"6");
-        if(btn==btn7)
-            lab.setText(lab.getText()+"7");
-        if(btn==btn8)
-            lab.setText(lab.getText()+"8");
-        if(btn==btn9)
-            lab.setText(lab.getText()+"9");
-        if(btn==btn10)
-            lab.setText(lab.getText()+"0");
-
-
+        else{
+            if(btn==btn1)// 如果是按下btn1按鈕
+                lab.setText("1");
+            if(btn==btn2)
+                lab.setText("2");
+            if(btn==btn3)
+                lab.setText("3");
+            if(btn==btn4)
+                lab.setText("4");
+            if(btn==btn5)
+                lab.setText("5");
+            if(btn==btn6)
+                lab.setText("6");
+            if(btn==btn7)
+                lab.setText("7");
+            if(btn==btn8)
+                lab.setText("8");
+            if(btn==btn9)
+                lab.setText("9");
+            if(btn==btn10)
+                lab.setText("0");
+        }
         if(btn==btn19){ //C
             //清除所有計算結果
             lab.setText("");
             counter=0;
             counterop=0;
-            lab.setText("0.");
+            lab.setText("0");
             for(int i=0;i<12;i++){
                 Cnum[i]=0;
             }
@@ -196,9 +217,11 @@ public class H7_110816002 extends Frame implements ActionListener{
 
         if(btn==btn23){ //去掉一個Del
             if(counter==0){ //如果未做任何輸入，表示不需要Del
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+                System.out.println("error!");
+//                lab.setText("error!renew it!");
+                lab.setText("0");
             }
+
             else{ //顯示刪掉最後輸入的數字，並讓Cnum[刪除值的索引值]存的值為0
                 lab.setText("");
                 for(int i=0;i<counter-1;i++){
@@ -216,14 +239,16 @@ public class H7_110816002 extends Frame implements ActionListener{
         }
 
         if(btn==btn20){ //去掉當前輸入CE
-            lab.setText("");
+            lab.setText("0");
             counter=0;
         }
 
         if(btn==btn11){ //+
-            if(counter==0){ //錯誤判斷，第一個輸入不為+
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+            if(counter==0 && counterop==0){ // 第一個輸入為+
+                counterop+=1;
+                out(0);
+                op="+";
+
             }
             else{
                 lab.setText("+");
@@ -236,9 +261,10 @@ public class H7_110816002 extends Frame implements ActionListener{
         }
 
         if(btn==btn12){ //-
-            if(counter==0){ //錯誤判斷，第一個輸入不為-
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+            if(counter==0 && counterop==0){ // 第一個輸入為-
+                counterop+=1;
+                out(0);
+                op="-";
             }
             else{
                 lab.setText("-");
@@ -251,9 +277,10 @@ public class H7_110816002 extends Frame implements ActionListener{
 
         }
         if(btn==btn13){ //*
-            if(counter==0){ //錯誤判斷，第一個輸入不為*
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+            if(counter==0 && counterop==0){ // 第一個輸入為*
+                counterop+=1;
+                out(0);
+                op="*";
             }
             else{
                 lab.setText("*");
@@ -266,9 +293,10 @@ public class H7_110816002 extends Frame implements ActionListener{
 
         }
         if(btn==btn14){ //÷
-            if(counter==0){ //錯誤判斷，第一個輸入不為÷
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+            if(counter==0 && counterop==0){ // 第一個輸入為÷
+                counterop+=1;
+                out(0);
+                op="/";
             }
             else{
                 lab.setText("÷");
@@ -282,28 +310,47 @@ public class H7_110816002 extends Frame implements ActionListener{
         }
         if(btn==btn21){ //=
             if(counterop==0){
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+                lab.setText("0");
             }
             else{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
-                System.out.println(temp);
+
                 out(temp);
                 if(state==true){ //考慮是否除法分母為0
-                    lab.setText(Float.toString(outcome));
+                    String judge = Float.toString(outcome);
+                    if(judge.contains(".")){
+                        int index;
+                        index = judge.indexOf(".");
+                        System.out.println(index);
+                        if(judge.substring(judge.indexOf(".")+1, judge.length()).equals("0")){
+                            lab.setText(Integer.toString((int) outcome));
+                        }
+                        else{
+                            lab.setText(Float.toString(outcome));
+                        }
+                    }
+                    else{
+                        lab.setText(Float.toString(outcome));
+                    }
                 }
                 else{
                     state=true;
                 }
                 counterop=0; //清除紀錄，重新開始小算盤
+                op="=";
             }
         }
 
         if(btn==btn22){ //小數點.
             if(counter==0){ //錯誤判斷，第一個輸入不為小數點
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+//                System.out.println("輸入錯誤!");
+                lab.setText("0.");
+                Cnum[counter]=0;
+                counter+=1;
+                Cnum[counter]=11;
+                counter+=1;
+
             }
             else{
                 lab.setText(lab.getText()+".");
@@ -313,9 +360,9 @@ public class H7_110816002 extends Frame implements ActionListener{
         }
 
         if(btn==btn18){ //平方
-            if(counter==0){ //錯誤判斷，第一個輸入不為^2
-                System.out.println("輸入錯誤!");
-                lab.setText("error!renew it!");
+            if(counter==0){ //第一個輸入為^2
+                lab.setText("0");
+                out(0);
             }
             else{
                 lab.setText("");
@@ -339,31 +386,75 @@ public class H7_110816002 extends Frame implements ActionListener{
             }
         }
         //僅做單次運算
-        if(btn==btn15){ //x分之一
-            lab.setText("");
-            float temp=tonumber(Cnum,counter);
-            float re=temp/100;
-            lab.setText(Float.toString(re)+" C End");
-            counter=0;
+        if(btn==btn15){ //100分之x
+            if(counter==0){
+                lab.setText("0");
+                counterop+=1;
+                out(0);
+            }
+            else{
+                lab.setText("");
+                float temp=tonumber(Cnum,counter);
+                float re=temp/100;
+                lab.setText(Float.toString(re));
+
+                counterop+=1;
+                out(re);
+                counter=0;
+            }
 
         }
         if(btn==btn17){ //x的倒數
-            lab.setText("");
-            float temp=tonumber(Cnum,counter);
-            float re=1/temp;
-            lab.setText(Float.toString(re)+" C End");
-            counter=0;
+            if(counter==0){
+                lab.setText("Cannot Divide by 0");
+            }
+            else{
+                lab.setText("");
+                float temp=tonumber(Cnum,counter);
+                float re=1/temp;
+                lab.setText(Float.toString(re));
+
+                counterop+=1;
+                out(re);
+                counter=0;
+            }
+
         }
         if(btn==btn16){ //根號
-            lab.setText("");
-            double temp=tonumber(Cnum,counter);
-            double re=Math.pow(temp,0.5);
-            lab.setText(Float.toString((float)re)+" C End");
-            counter=0;
+            if(counter==0){
+                lab.setText("0");
+                counterop+=1;
+                out(0);
+            }
+            else{
+                lab.setText("");
+                double temp=tonumber(Cnum,counter);
+                double re=Math.pow(temp,0.5);
+
+                String judge = Double.toString(re);
+                if(judge.contains(".")){
+                    int index;
+                    index = judge.indexOf(".");
+
+                    if(judge.substring(judge.indexOf(".")+1, judge.length()).equals("0")){
+                        lab.setText(Integer.toString((int) re));
+                    }
+                    else{
+                        lab.setText(Float.toString(outcome));
+                    }
+                }
+
+//                lab.setText(Float.toString((float)re));
+
+                counterop+=1;
+                out((float)re);
+                counter=0;
+            }
+
         }
 
     }
-    //把一個數字一個數字組合起來成一個operatand
+    //把一個數字一個數字組合起來成一個operand
     public float tonumber(float Cnum[],int counter){
         float temp=0;
         boolean smallnum=false;
@@ -432,7 +523,7 @@ public class H7_110816002 extends Frame implements ActionListener{
                     state=false; //設狀態為false表示在除法時，分母為0
                     outcome=0;
                     counterop=0;
-                    lab.setText("error!");
+                    lab.setText("Cannot Divide by 0");
                     System.out.println("分母不為0");
 
                 }else{
@@ -447,6 +538,7 @@ public class H7_110816002 extends Frame implements ActionListener{
             Cnum[i]=0;
         //要清除Cnum的值，因為要存下一次輸入的數字
         counter=0;
+
         return outcome;
     }
     //平方函數
