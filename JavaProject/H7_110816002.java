@@ -153,6 +153,7 @@ public class H7_110816002 extends Frame implements ActionListener{
     int counterop=0; //計算輸入幾次opertor
     boolean state=true; //做除法運算時，分母是否為0的判斷紀錄
     String op; //紀錄上一次輸入的operator
+    String finalnum;
 
     float Cnum[]=new float[12];//紀錄輸入每一次輸入的數字，根據位置乘10000...1000、100、10、1
     float firstnum,secondnum=0; //紀錄運算的數字
@@ -213,6 +214,7 @@ public class H7_110816002 extends Frame implements ActionListener{
         if(btn==btn19){ //C
             //清除所有計算結果
             lab.setText("");
+            labProcess.setText("");
             counter=0;
             counterop=0;
             lab.setText("0");
@@ -263,9 +265,11 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
-                judgement(temp);
-                labProcess.setText(labProcess.getText()+"+");
+//                judgement(temp);
+//                labProcess.setText(labProcess.getText()+"+");
                 out(temp);
+                judgement(firstnum);
+                labProcess.setText(labProcess.getText()+"+");
                 op="+";
             }
         }
@@ -282,9 +286,9 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
-                judgement(temp);
-                labProcess.setText(labProcess.getText()+"-");
                 out(temp);
+                judgement(firstnum);
+                labProcess.setText(labProcess.getText()+"-");
                 op="-";
             }
 
@@ -302,9 +306,9 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
-                judgement(temp);
-                labProcess.setText(labProcess.getText()+"x");
                 out(temp);
+                judgement(firstnum);
+                labProcess.setText(labProcess.getText()+"x");
                 op="*";
             }
 
@@ -321,9 +325,10 @@ public class H7_110816002 extends Frame implements ActionListener{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
                 System.out.println(temp);
-                judgement(temp);
-                labProcess.setText(labProcess.getText()+"÷");
+
                 out(temp);
+                judgement(firstnum);
+                labProcess.setText(labProcess.getText()+"÷");
                 op="/";
             }
 
@@ -335,7 +340,6 @@ public class H7_110816002 extends Frame implements ActionListener{
             else{
                 counterop+=1;
                 float temp=tonumber(Cnum,counter);
-
                 out(temp);
                 if(state==true){ //考慮是否除法分母為0
                     String judge = Float.toString(outcome);
@@ -353,13 +357,18 @@ public class H7_110816002 extends Frame implements ActionListener{
                     else{
                         lab.setText(Float.toString(outcome));
                     }
+
+                    pure(temp);
+                    if(op!="1/x" && op!="√" && op!="x/100" && op!="x^2")
+                        labProcess.setText(labProcess.getText()+finalnum+"=");
+                    else labProcess.setText(labProcess.getText()+"=");
                 }
                 else{
                     state=true;
                 }
                 counterop=0; //清除紀錄，重新開始小算盤
                 op="=";
-                labProcess.setText("");
+//                labProcess.setText("");
             }
         }
 
@@ -382,12 +391,19 @@ public class H7_110816002 extends Frame implements ActionListener{
         if(btn==btn18){ //平方
             if(counter==0){ //第一個輸入為^2
                 lab.setText("0");
+                labProcess.setText("sqr(0)");
                 out(0);
             }
             else{
                 lab.setText("");
+                labProcess.setText("sqr(");
                 float temp=tonumber(Cnum,counter);
+                pure(temp);
+                labProcess.setText(labProcess.getText()+finalnum);
                 float realSquare=square(temp);
+                counterop+=1;
+                out(realSquare);
+
                 int s=Integer.toString((int)realSquare).length();
                 int squarenum[]=new int[12];
                 //將平方後的數字拆開存進陣列
@@ -402,10 +418,13 @@ public class H7_110816002 extends Frame implements ActionListener{
                     Cnum[i]=squarenum[i];
                     lab.setText(lab.getText()+squarenum[i]);
                 }
-                counter=s;
+                counter=0;
+                labProcess.setText(labProcess.getText()+")");
+
             }
+            op="^2";
         }
-        //僅做單次運算
+        // 特殊運算
         if(btn==btn15){ //100分之x
             if(counter==0){
                 lab.setText("0");
@@ -416,11 +435,17 @@ public class H7_110816002 extends Frame implements ActionListener{
                 lab.setText("");
                 float temp=tonumber(Cnum,counter);
                 float re=temp/100;
-                lab.setText(Float.toString(re));
+                pure(temp);
+                labProcess.setText(finalnum);
+                labProcess.setText(labProcess.getText()+"/100");
 
+                pure(re);
+//                lab.setText(Float.toString(re));
+                lab.setText(finalnum);
                 counterop+=1;
                 out(re);
                 counter=0;
+                op="x/100";
             }
 
         }
@@ -430,7 +455,11 @@ public class H7_110816002 extends Frame implements ActionListener{
             }
             else{
                 lab.setText("");
+                labProcess.setText("1/(");
                 float temp=tonumber(Cnum,counter);
+                pure(temp);
+                labProcess.setText(labProcess.getText()+finalnum);
+                labProcess.setText(labProcess.getText()+")");
                 float re=1/temp;
                 lab.setText(Float.toString(re));
 
@@ -438,11 +467,12 @@ public class H7_110816002 extends Frame implements ActionListener{
                 out(re);
                 counter=0;
             }
-
+            op="1/x";
         }
         if(btn==btn16){ //根號
             if(counter==0){
                 lab.setText("0");
+                labProcess.setText("√(0)");
                 counterop+=1;
                 out(0);
             }
@@ -450,6 +480,8 @@ public class H7_110816002 extends Frame implements ActionListener{
                 lab.setText("");
                 double temp=tonumber(Cnum,counter);
                 double re=Math.pow(temp,0.5);
+                pure((float) temp);
+                labProcess.setText("√("+finalnum+")");
 
                 String judge = Double.toString(re);
                 if(judge.contains(".")){
@@ -460,17 +492,15 @@ public class H7_110816002 extends Frame implements ActionListener{
                         lab.setText(Integer.toString((int) re));
                     }
                     else{
-                        lab.setText(Float.toString(outcome));
+                        lab.setText(Float.toString((float) re));
                     }
                 }
-
-//                lab.setText(Float.toString((float)re));
 
                 counterop+=1;
                 out((float)re);
                 counter=0;
             }
-
+            op="√";
         }
 
     }
@@ -579,5 +609,19 @@ public class H7_110816002 extends Frame implements ActionListener{
         } else {
             labProcess.setText(Float.toString(x));
         }
+    }
+
+    public void pure(float x) {
+        String judge = Float.toString(x);
+
+        if (judge.contains(".")) {
+            int index;
+            index = judge.indexOf(".");
+            System.out.println(index);
+            if (judge.substring(judge.indexOf(".") + 1, judge.length()).equals("0")) {
+
+                finalnum = Integer.toString((int) x);
+            } else finalnum = (Float.toString(x));
+        } else finalnum = Float.toString(x);
     }
 }
